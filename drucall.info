@@ -1,0 +1,6 @@
+name = DruCall Phone
+description = WebRTC SIP client for Drupal.
+package = DruCall
+core = 7.x
+version = 7.x-1.0
+

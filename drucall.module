@@ -1,0 +1,68 @@
+<?php
+
+
+
+function drucall_menu() {
+  $items['drucall'] = array(
+    'title' => 'DruCall',
+    'page callback' => 'drucall_call',
+    'access callback' => TRUE,
+    'expanded' => TRUE,
+  );
+
+  $items['admin/config/drucall'] = array(
+   'title' => 'DruCall WebRTC',
+   'description' => 'Configure DruCall.',
+   'position' => 'right',
+   'weight' => -15,
+   'page callback' => 'system_admin_menu_block_page',
+   'access arguments' => array('administer drucall'),
+   'file' => 'system.admin.inc',
+   'file path' => drupal_get_path('module', 'system'),
+  );
+
+  $items['admin/config/drucall/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Administer DruCall server settings.',
+    'weight' => 0,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('drucall_admin'),
+    'access arguments' => array('administer drucall'),
+    'type' => MENU_LOCAL_TASK | MENU_NORMAL_ITEM,
+    'file' => 'drucall.admin.inc',
+  );
+
+
+  return $items;
+}
+
+function drucall_theme() {
+  return array(
+    'drucall_phone' => array(
+      'render element' => 'element',
+      'template' => 'drucall-phone',
+    ),
+  );
+}
+
+function drucall_call() {
+  drupal_add_js(drupal_get_path('module', 'drucall') . '/js/SIPml-api.js');
+
+  $my_settings = array(
+      'phone_number' => variable_get('default_destination'),
+      'display_name' => variable_get('display_name'),
+      'impi' => variable_get('auth_user'),
+      'impu' => variable_get('from_uri'),
+      'password' => variable_get('auth_password'),
+      'realm' => variable_get('auth_realm'),
+      'websocket_server_url' => variable_get('websocket_server_url'),
+      'sip_outboundproxy_url' => variable_get('sip_outboundproxy_url'),
+  );
+
+  drupal_add_js(
+    array('drucall' => $my_settings),
+    'setting');
+
+  drupal_add_js(drupal_get_path('module', 'drucall') . '/js/drucall.js');
+  return theme('drucall_phone');
+}
