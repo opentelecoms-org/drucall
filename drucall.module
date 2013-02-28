@@ -46,7 +46,7 @@ function drucall_theme() {
 }
 
 function drucall_call() {
-  drupal_add_js(drupal_get_path('module', 'drucall') . '/js/SIPml-api.js');
+  drupal_add_js(drupal_get_path('module', 'drucall') . '/sipml5/release/SIPml-api.js');
 
   $my_settings = array(
       'phone_number' => variable_get('default_destination'),
