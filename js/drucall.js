@@ -188,6 +188,8 @@
                 window.webkitNotifications.requestPermission();
             }
 
+            var my_ice_servers = '[{url:\'' + my_settings.turn_server_url + '\',credential:\'' + my_settings.turn_password + '\'}]';
+
             // create SIP stack
             oSipStack = new SIPml.Stack({
                     realm: my_settings.realm,
@@ -197,6 +199,7 @@
                     display_name: my_settings.display_name,
                     websocket_proxy_url: my_settings.websocket_server_url,
                     outbound_proxy_url: my_settings.sip_outboundproxy_url,
+                    ice_servers: my_ice_servers,
                     enable_rtcweb_breaker: false,
                     events_listener: { events: '*', listener: onSipEventStack },
                     sip_headers: [

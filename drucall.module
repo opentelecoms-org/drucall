@@ -57,6 +57,8 @@ function drucall_call() {
       'realm' => variable_get('auth_realm'),
       'websocket_server_url' => variable_get('websocket_server_url'),
       'sip_outboundproxy_url' => variable_get('sip_outboundproxy_url'),
+      'turn_server_url' => variable_get('turn_server_url'),
+      'turn_password' => variable_get('turn_password'),
   );
 
   drupal_add_js(
