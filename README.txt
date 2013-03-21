@@ -43,7 +43,16 @@ c) set up a user to receive calls, for example, using one of the online
    or install one of these apps to your own server (e.g. the Debian package
    sipml5-web-phone), and then go to http://your-server/sipml5-web-phone
 
-d) unpack the DruCall module into your Drupal 7 modules directory
+d) unpack the modules:
+
+    DruCall module into your Drupal 7 modules directory
+    libraries API into your Drupal 7 modules directory
+    mkdir (drupal)sites/all/libraries/sipml5/release
+
+    Download SIPml5-api.js into (drupal)sites/all/libraries/sipml5/release
+     (from http://sipml5.org)
+
+    echo "1.0.0" > (drupal)sites/all/libraries/sipml5/VERSION
 
 e) go to the Administration / Configuration / DruCall / Settings panel,
 
