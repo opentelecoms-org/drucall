@@ -46,7 +46,20 @@ function drucall_theme() {
 }
 
 function drucall_call() {
-  drupal_add_js(drupal_get_path('module', 'drucall') . '/sipml5/release/SIPml-api.js');
+
+  // We use the `libraries' module to load sipml5 javascript:
+  if (!($library = libraries_detect("sipml5"))) {
+    $error = "failed to load sipml5, please install it (check the DruCall instructions)";
+  }
+  if($library && empty($library['installed'])) {
+    $error = $library['error'];
+    $error_msg = $library['error message'];
+  }
+  if(isset($error)) {
+    drupal_set_message($error_msg, $error, FALSE);
+    return $error;
+  } 
+  libraries_load('sipml5');
 
   $my_settings = array(
       'phone_number' => variable_get('default_destination'),

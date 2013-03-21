@@ -2,4 +2,6 @@ name = DruCall Phone
 description = WebRTC SIP client for Drupal.
 package = DruCall
 core = 7.x
+dependencies[] = sipml5
+configure = admin/config/drucall/settings
 
