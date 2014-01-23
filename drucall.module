@@ -47,22 +47,29 @@ function drucall_theme() {
 
 function drucall_call() {
 
-  // We use the `libraries' module to load sipml5 javascript:
-  if (!($library = libraries_detect("sipml5"))) {
-    $error = "failed to load sipml5, please install it (check the DruCall instructions)";
+  // We use the `libraries' module to load jssip and jscommunicator javascript:
+
+  foreach ([ "jssip", "jscommunicator" ] as $libname) {
+    if (!($library = libraries_detect($libname))) {
+      $error = "failed to load an essential component";
+      $error_msg = "failed to load $libname - please install it (check the DruCall instructions)";
+    }
+    if($library && empty($library['installed'])) {
+      $error = $library['error'];
+      $error_msg = $library['error message'];
+    }
+    if(isset($error)) {
+      drupal_set_message($error_msg, $error, FALSE);
+      return $error;
+    } 
+    libraries_load($libname);
   }
-  if($library && empty($library['installed'])) {
-    $error = $library['error'];
-    $error_msg = $library['error message'];
-  }
-  if(isset($error)) {
-    drupal_set_message($error_msg, $error, FALSE);
-    return $error;
-  } 
-  libraries_load('sipml5');
 
   $my_settings = array(
+      'mod_path' => drupal_get_path('module', 'drucall'),
       'phone_number' => variable_get('default_destination'),
+      'enable_audio' => variable_get('enable_audio'),
+      'enable_video' => variable_get('enable_video'),
       'display_name' => variable_get('display_name'),
       'impi' => variable_get('auth_user'),
       'impu' => variable_get('from_uri'),
@@ -71,6 +78,7 @@ function drucall_call() {
       'websocket_server_url' => variable_get('websocket_server_url'),
       'sip_outboundproxy_url' => variable_get('sip_outboundproxy_url'),
       'turn_server_url' => variable_get('turn_server_url'),
+      'turn_username' => variable_get('turn_username'),
       'turn_password' => variable_get('turn_password'),
   );
 
@@ -79,5 +87,7 @@ function drucall_call() {
     'setting');
 
   drupal_add_js(drupal_get_path('module', 'drucall') . '/js/drucall.js');
+  drupal_add_css(drupal_get_path('module', 'drucall') . '/css/jscommunicator.css', array('group' => CSS_DEFAULT, 'type' => 'file'));
+
   return theme('drucall_phone');
 }

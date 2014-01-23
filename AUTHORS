@@ -1,9 +1,16 @@
 
 Copyright (C) 2013 Daniel Pocock http://danielpocock.com
-and distributed under a GPLv2 license (see COPYING for details)
+and distributed under a GPLv2 or later license (see COPYING for details)
 
-Based on SIPml5, Copyright (C) 2012-2013 Doubango Telecom
-and distributed under the terms of a BSD license
+Based on:
+
+JSCommunicator, http://jscommunicator.org
+Copyright (C) 2013 Daniel Pocock http://danielpocock.com
+and distributed under the terms of the GPLv2 or later license
+
+JsSIP, http://jssip.net
+Copyright (C) 2012-2013 José Luis Millán - Versatica <http://www.versatica.com>
+and distributed under the terms of an MIT license
 
 
 

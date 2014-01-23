@@ -19,6 +19,20 @@ function drucall_admin($form, &$form_state) {
     '#description' => t('The default destination that should be dialed when a visitor makes a DruCall call.  Can be the user part of a URI, or a full sip: URI.'),
   );
 
+  $form['enable_audio'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Allow audio call'),
+    '#default_value' => variable_get('enable_audio', true),
+    '#description' => t('Whether or not to show a button allowing an audio call.'),
+  );
+
+  $form['enable_video'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Allow video call'),
+    '#default_value' => variable_get('enable_video', true),
+    '#description' => t('Whether or not to show a button allowing a video call.'),
+  );
+
   $form['display_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Display name for caller'),
@@ -85,10 +99,19 @@ function drucall_admin($form, &$form_state) {
   $form['turn_server_url'] = array(
     '#type' => 'textfield',
     '#title' => t('STUN/TURN server URL'),
-    '#default_value' => variable_get('turn_server_url', 'turn:user@turn-server.example.org'),
+    '#default_value' => variable_get('turn_server_url', 'turn:turn-server.example.org'),
     '#cols' => 40,
     '#rows' => 1,
-    '#description' => t('The URL of the TURN server, for example, turn:user@turn-server.example.org.'),
+    '#description' => t('The URL of the TURN server, for example, turn:turn-server.example.org.'),
+  );
+
+  $form['turn_username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('TURN server username'),
+    '#default_value' => variable_get('turn_username', ''),
+    '#cols' => 40,
+    '#rows' => 1,
+    '#description' => t('The username (long-term credential) for authenticating to the TURN server.'),
   );
 
   $form['turn_password'] = array(
@@ -115,6 +138,8 @@ function drucall_admin($form, &$form_state) {
 function drucall_admin_submit($form, &$form_state) {
 
   variable_set('default_destination', $form_state['values']['default_destination']);
+  variable_set('enable_audio', $form_state['values']['enable_audio']);
+  variable_set('enable_video', $form_state['values']['enable_video']);
   variable_set('display_name', $form_state['values']['display_name']);
   variable_set('from_uri', $form_state['values']['from_uri']);
   variable_set('auth_user', $form_state['values']['auth_user']);
@@ -123,6 +148,7 @@ function drucall_admin_submit($form, &$form_state) {
   variable_set('websocket_server_url', $form_state['values']['websocket_server_url']);
   variable_set('sip_outboundproxy_url', $form_state['values']['sip_outboundproxy_url']);
   variable_set('turn_server_url', $form_state['values']['turn_server_url']);
+  variable_set('turn_username', $form_state['values']['turn_username']);
   variable_set('turn_password', $form_state['values']['turn_password']);
 
   drupal_set_message(t('Your settings have been saved.'));

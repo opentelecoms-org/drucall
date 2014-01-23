@@ -1,73 +1,120 @@
-<div id="divCallCtrl" >
 
-<table>
-  <tr><td>Server status:</td><td><label id="txtRegStatus"></label></td></tr>
-  <tr><td>Call status:</td><td><label id="txtCallStatus"></label></td></tr>
-</table>
+<!-- To use JSCommunicator, you can either cut and paste
+     this entire HTML fragment into an existing HTML page
+     or copy it into a CMS or other publishing framework.
 
-  <br/>
-  <p>DruCall is the <a href="http://www.webrtc.org">WebRTC</a> calling module for <a href="http://www.drupal.org">Drupal</a></p>
+     If using a static HTML page, simply copy the <script>
+     definitions from the file phone.shtml into your own page
+     <head> section.
 
-  <p>To call me, you simply need to have a recent web browser.  This has been tested with <a href="https://www.google.com/intl/en/chrome/browser/beta.html">Google Chrome 25</a>
-   and should also work with <a href="http://nightly.mozilla.org/">Firefox nightly builds</a> and <a href="https://labs.ericsson.com/apps/bowser">Bowser (From Ericsson Labs)</a> on Android</p>
+     If using a CMS or some other framework, you will need to
+     copy the <script> references from phone.shtml into the
+     file or script used to generate the page header.
+     You may also be able to tell the CMS about the JavaScript
+     <script> references through its management console.
+     Alternatively, if you are unable to modify the CMS generated <head>,
+     it is completely valid to include the <script> elements in the
+     HTML body where you include the HTML fragement from this file -->
 
-  <p>If your browser is capable of <a href="http://www.webrtc.org">WebRTC</a> calling, you simply need to click the <b>Call</b>
-    button below to initiate a call.</p>
-  <br/>
+<div id="network-controls">
 
+    <div id="error">
+        <span id="js">ERROR: This service requires JavaScript.  Please enable JavaScript in your web browser settings.</span>
+        <span id="webrtc">ERROR: This service requires WebRTC.  Please try <a href="http://www.mozilla.org">Mozilla Firefox</a> or <a href="http://www.google.com/chrome">Google Chrome</a>, using the latest version is strongly recommended.</span>
+        <span id="no-config">ERROR: JsCommunicator configuration not found</span>
+        <span id="ua-init-failure">ERROR: Failed to initialize user agent</span>
+        <span id="reg-fail">ERROR: SIP Registration failure</span>
+        <span id="call-attempt-failed">ERROR: failed to start call, check that microphone/webcam are connected, check browser security settings, peer may not support compatible codecs</span>
+        <span id="dynamic"></span>
+    </div>
+
+    <div id="jsc-login">
+        <div id="jsc-login-display-name">
+            <span class="jsc-login-label">Display name (may be empty)</span>
+            <input type="text" id="jsc-login-display-name-field"/>
+        </div>
+        <div id="jsc-login-sip-uri">
+            <span class="jsc-login-label">SIP address</span>
+            <span>sip:<input type="text" id="jsc-login-sip-address-field"/></span>
+        </div>
+        <div id="jsc-login-password">
+            <span class="jsc-login-label">Password</span>
+            <input type="password" id="jsc-login-password-field"/>
+        </div>
+        <input type="button" value="Login" id="jsc-login-button"/>
+    </div>
+
+    <div id="ws">
+        <span>WebSocket link:</span>
+        <span id="connected" class="state ws-connected">Connected</span>
+        <span id="disconnected" class="state ws-disconnected">Disconnected</span>
+    </div>
+
+    <div id="reg" class="ws-connected up down"><span>SIP registration:</span>
+        <span id="state">
+            <span class="up">Registered</span>
+            <span class="down">Not Registered</span>
+        </span>
+        <span id="control">
+            <input type="button" value="Register" id="reg-button" class="down"/>
+            <input type="button" value="De-Register" id="de-reg-button" class="up"/>
+        </span>
+    </div>
 </div>
 
-                <table style='width: 100%;'>
-                    <tr>
-                        <td colspan="1" align="right">
-
-                            <input type="button" class="btn-primary" style="" id="btnCallAudio" value="Call (audio only)" onclick='sipCall(false);' disabled /> &nbsp;
-                            <input type="button" class="btn-primary" style="" id="btnCall" value="Call (with video)" onclick='sipCall(true);' disabled /> &nbsp;
-                            <input type="button" class="btn-primary" style="" id="btnHangUp" value="HangUp" onclick='sipHangUp();' disabled />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td id="tdVideo" class='tab-video'>
-                            <div id="divVideo" class='div-video'>
-                                <div id="divVideoRemote" style='border:1px solid #000; height:100%; width:100%';>
-                                    <video class="video" width="100%" height="100%" id="video_remote" autoplay="autoplay" style="opacity: 0; background-color: #000000; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;">
-                                    </video>
-                                </div>
-                                <div id="divVideoLocal" style='border:0px solid #000'>
-                                    <video class="video" width="88px" height="72px" id="video_local" autoplay="autoplay" style="opacity: 0; margin-top: -80px; margin-left: 5px; background-color: #000000; -webkit-transition-property: opacity; -webkit-transition-duration: 2s;">
-                                    </video>
-                                </div>
-                            </div>
-                        </td>
-
-                    </tr>
-                    <tr>
-                       <td align='center'>
-                            <div id='divCallOptions' class='call-options' style='opacity: 0; margin-top: 3px'>
-                                <input type="button" class="btn" style="" id="btnFullScreen" value="FullScreen" disabled onclick='toggleFullScreen();' /> &nbsp;
-                                <input type="button" class="btn" style="" id="btnHoldResume" value="Hold" onclick='sipToggleHoldResume();' /> &nbsp;
-                                <input type="button" class="btn" style="" id="btnTransfer" value="Transfer" onclick='sipTransfer();' /> &nbsp;
-
-                                <!--input type="button" class="btn" style="" id="btnKeyPad" value="KeyPad" onclick='toto();' /-->
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+<div id="dial-controls" class="ws-connected">
+    <div id="dest">
+        <span>Destination:</span>
+        <input type="text" id="address"/>
+    </div>
+    <div id="dialing-actions">
+        <input type="button" value="Call (audio only)" id="call-audio"/>
+        <input type="button" value="Call (audio and video)" id="call-video"/>
+    </div>
 </div>
 
-<!-- Audios -->
-<?PHP $drucall_prefix = drupal_get_path('module', 'drucall');?>
-<audio id="audio_remote" autoplay="autoplay" />
-<audio id="ringtone" loop src="/<?=$drucall_prefix?>/sounds/ringtone.wav" />
-<audio id="ringbacktone" loop src="/<?=$drucall_prefix?>/sounds/ringbacktone.wav" />
+<div id="session-controls" class="ws-connected in-call">
+    <div id="state">
+        <span class="session-outgoing">Dialing...</span>
+        <span class="session-incoming">Incoming call</span>
+        <span class="session-accepted">Answering, connectivity checks in progress...</span>
+        <span class="session-active">Call connected</span>
+    </div>
+    <div id="peer"></div>
+    <div id="session-actions">
+        <input type="button" value="Cancel" id="session-cancel" class="session-outgoing"/>
+        <input type="button" value="Reject" id="session-reject" class="session-incoming"/>
+        <input type="button" value="Answer" id="session-answer" class="session-incoming"/>
+        <input type="button" value="Answer (with video)" id="session-answer-video" class="session-incoming"/>
+        <input type="button" value="Hold" id="session-hold" class="session-active" disabled/>
+        <input type="button" value="Hangup" id="session-hangup" class="session-active"/>
+    </div>
+    <div id="dtmf-pad" class="session-active">
+        <input type="button" value="1" class="dtmf-number"/>
+        <input type="button" value="2" class="dtmf-number"/>
+        <input type="button" value="3" class="dtmf-number"/>
+        <br/>
+        <input type="button" value="4" class="dtmf-number"/>
+        <input type="button" value="5" class="dtmf-number"/>
+        <input type="button" value="6" class="dtmf-number"/>
+        <br/>
+        <input type="button" value="7" class="dtmf-number"/>
+        <input type="button" value="8" class="dtmf-number"/>
+        <input type="button" value="9" class="dtmf-number"/>
+        <br/>
+        <input type="button" value="*" class="dtmf-symbol"/>
+        <input type="button" value="0" class="dtmf-number"/>
+        <input type="button" value="#" class="dtmf-symbol"/>
+    </div>
+</div>
 
-<div>
-  <br/>
-  <label style="width: 100%;" align="center" id="txtRegStatus"></label>
-
-  <br/>
-  <p>DruCall is the <a href="http://www.webrtc.org">WebRTC</a> calling module for <a href="http://www.drupcal.org">Drupal</a></p>
-
- 
+<div id="video-session" class="ws-connected in-call">
+    <video id="remoteView" autoplay></video>
+    <video id="selfView" autoplay></video>
+    <div id="video-controls">
+        <input type="button" value="Self view" id="video-control-self-view" class="self"/>
+        <input type="button" value="Self hide" id="video-control-self-hide" class="self"/>
+        <input type="button" value="Full screen" id="video-control-fullscreen" disabled/>
+    </div>
 </div>
 
