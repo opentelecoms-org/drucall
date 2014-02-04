@@ -47,9 +47,9 @@ function drucall_theme() {
 
 function drucall_call() {
 
-  // We use the `libraries' module to load jssip and jscommunicator javascript:
+  // We use the `libraries' module to load javascript dependencies:
 
-  foreach ([ "jssip", "jscommunicator" ] as $libname) {
+  foreach ([ "jssip", "jscommunicator", "arbiterjs" ] as $libname) {
     if (!($library = libraries_detect($libname))) {
       $error = "failed to load an essential component";
       $error_msg = "failed to load $libname - please install it (check the DruCall instructions)";

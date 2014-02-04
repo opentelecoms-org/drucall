@@ -4,5 +4,6 @@ package = DruCall
 core = 7.x
 dependencies[] = jssip
 dependencies[] = jscommunicator
+dependencies[] = arbiterjs
 configure = admin/config/drucall/settings
 
